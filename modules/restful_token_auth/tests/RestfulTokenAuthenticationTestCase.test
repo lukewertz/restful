@@ -150,4 +150,26 @@ class RestfulTokenAuthenticationTestCase extends DrupalWebTestCase {
       $this->pass('"Bad Request" exception was thrown.');
     }
   }
+
+  /**
+   * Test deleting a token.
+   */
+  function testTokenDelete() {
+    // Create user.
+    $user1 = $this->drupalCreateUser();
+    $this->drupalLogin($user1);
+
+    // Get a token for the user, using the handler.
+    $handler = restful_get_restful_handler('access_token');
+    $result = $handler->get();
+    $access_token = $result['access_token'];
+    $refresh_token = $result['refresh_token'];
+    $this->assertNotNull($access_token);
+    $this->assertNotNull($refresh_token);
+
+
+    $delete = $handler->delete();
+
+    $this->assertFalse($delete, 'The token was deleted.');
+  }
 }
